@@ -1,12 +1,13 @@
 """ Payload Functions """
 import json
-import os
 import socket
 from datetime import datetime
+import platform
+from trenasty.configs.config import TREBLLE_SENSITIVE_KEYS, TREBLLE_PROJECT_ID, TREBLLE_API_KEY
 
 
 class DataBuilder:
-    """ Data building class to prepare the payload,
+    """ Data building class to prepare the payload/data,
     that will be sent to treblle
     """
     DEFAULT_SENSITIVE_FIELDS = {
@@ -30,13 +31,16 @@ class DataBuilder:
 
     def call(self):
         """ Call DataBuilder """
+        project_id = TREBLLE_PROJECT_ID
+        api_key = TREBLLE_API_KEY
+        if not project_id or not api_key:
+            return
         time_spent = self.params['ended_at'] - self.params['started_at']
         user_agent = self.params['env'].get(
-            'HTTP_USER_AGENT', '')  # User agent
-        ip = self.calculate_ip(self.params['env'].get(
-            'action_dispatch.remote_ip', ''))  # IP address
+            'HTTP_USER_AGENT', '')  # Get User agent value from request.scope attribute
+        ip = self.fetch_ip(self.params['env'].get(
+            'CLIENT', '')[0])  # Get IP address from request.scope attribute
         request_method = self.params['env'].get('REQUEST_METHOD', '')
-        project_id = os.environ.get('TREBLLE_PROJECT_ID', '')
         request_body = (
             json.dumps(self.safe_to_json(
                 self.params['request'].query_parameters))
@@ -45,22 +49,27 @@ class DataBuilder:
         )  # Request body
 
         data = {
-            'api_key': os.environ.get('TREBLLE_API_KEY', ''),
+            'api_key': api_key,
             'project_id': project_id,
-            'version': '1.0.0',
-            'sdk': 'python',
+            'version': '0.6',
+            'sdk': 'python-fastapi',
             'data': {
                 'server': {
                     'ip': self.server_ip(),
-                    'timezone': os.environ.get('SERVER_TIMEZONE', 'UTC'),
+                    'timezone': datetime.now().astimezone().tzinfo,
                     'software': self.params['headers'].get('SERVER_SOFTWARE', ''),
                     'signature': '',
                     'protocol': self.params['headers'].get('SERVER_PROTOCOL', ''),
-                    'os': {},
+                    'os': {
+                        "name": platform.system(),
+                        "release": platform.release(),
+                        "architecture": platform.machine(),
+                        "version": platform.version(),
+                    },
                 },
                 'language': {
                     'name': 'python',
-                    'version': '3.10.12',  # Replace with your Python version
+                    'version': '3.10.12',  # Python Version
                 },
                 'request': {
                     'timestamp': datetime.utcfromtimestamp(self.params['started_at']).strftime('%Y-%m-%d %H:%M:%S'),
@@ -81,7 +90,7 @@ class DataBuilder:
                     'errors': self.build_error_object(self.params['exception']),
                 },
             },
-        }  # Payload to be sent to Treblle
+        }  # Payload/Data to be sent to Treblle
 
         try:
             return json.dumps(data)  # Return payload as JSON
@@ -107,6 +116,9 @@ class DataBuilder:
             return [self.process_data(item) for item in data]
         elif isinstance(data, str) and data in self.sensitive_attrs():
             return '*' * len(data)
+        # sensitive_fields = set("pwdssncard_numberccv")
+        # data = {"name": "John", "age": 30, "pwd": "123456JKL"}
+        # "name": "John", "age": 30, "pwd": "*********"
         else:
             return data
 
@@ -115,8 +127,12 @@ class DataBuilder:
         return self.user_sensitive_fields().union(self.DEFAULT_SENSITIVE_FIELDS)
 
     def user_sensitive_fields(self):
-        fields = os.environ.get(
-            'TREBLLE_SENSITIVE_FIELDS', '').replace(' ', '')
+        """ Get user sensitive fields """
+        fields = TREBLLE_SENSITIVE_KEYS.replace(' ', '')
+        # fields = "pwd ssn card_number ccv"
+        # fields = "pwdssncard_numberccv"
+        # fields = "pwd,ssn,card_number,ccv
+        # fields = (pwd,ssn,card_number,ccv)
         return set(fields.split(','))
 
     def build_error_object(self, exception):
@@ -135,9 +151,12 @@ class DataBuilder:
 
     def server_ip(self):
         """ Get server IP """
-        for ai in socket.getaddrinfo(socket.gethostname(), None):
-            if ai[1] == socket.SOCK_STREAM:
-                return ai[4][0]
+        for addr in socket.getaddrinfo(socket.gethostname(), None):
+            # addr = tuple of (family, type, proto, canonname, sockaddr[ip, port])
+            if addr[1] == socket.SOCK_STREAM:
+                # if addr[1] is socket.SOCK_STREAM, then it is IPv4 operating on TCP Network
+                # returning the IP address from the sockaddr tuple (addr[4][0])
+                return addr[4][0]
         # Return localhost if unable to get server IP
         return '127.0.0.1'
 
@@ -145,6 +164,7 @@ class DataBuilder:
         """ Get request headers """
         if not self.params['request']:
             return {}
+        # Return request headers without '.' in the key name (to avoid error) and convert to dictionary format (key-value pair)
         return {key: value for key, value in self.params['request'].headers.env.items() if '.' not in key}
 
     def safe_to_json(self, obj):
@@ -154,10 +174,12 @@ class DataBuilder:
         except Exception:
             return {}
 
-    def calculate_ip(self, remote_ip):
-        """ Calculate IP """
+    def fetch_ip(self, remote_ip):
+        """ Fetch Host IP """
         if remote_ip:
             return remote_ip  # Return remote IP if available
+        # Return server IP if remote IP is not available (e.g. in localhost)
 
         server_ip = socket.gethostbyname(socket.gethostname())  # Server IP
+        #
         return server_ip
