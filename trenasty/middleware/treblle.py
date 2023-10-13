@@ -122,14 +122,13 @@ class TreblleMiddleware:
             'Content-Security-Policy': 'default-src \'self\'',
             'X-Content-Type-Options': 'nosniff',
             'X-Rate-Limit': '100',
-            'Content-Encoding': 'gzip',
+            # 'Content-Encoding': 'gzip',
             # 'Accept-Encoding': 'gzip, deflate, br',
         }  # Headers for Treblle request
         try:
             # Send data to Treblle
             res = requests.post(uri, data=data, headers=headers)
-            inf = gzip.decompress(res.text)
-            logging.info(f"{inf.decode('utf-8')}")  # Print Treblle response
+            logging.info(f"{res.text}")  # Print Treblle response
         except Exception as e:
             logging.error(f"{e}")
 
