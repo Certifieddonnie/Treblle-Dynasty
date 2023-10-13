@@ -3,7 +3,8 @@ import json
 import socket
 from datetime import datetime
 import platform
-from trenasty.configs.config import TREBLLE_SENSITIVE_KEYS, TREBLLE_PROJECT_ID, TREBLLE_API_KEY
+from trenasty.utils.helper import DateTimeEncoder
+from trenasty.configs.config import TREBLLE_SENSITIVE_KEYS, TREBLLE_PROJECT_ID, TREBLLE_API_KEY, TIME_ZONE
 
 
 class DataBuilder:
@@ -29,7 +30,7 @@ class DataBuilder:
         """ Initialize DataBuilder """
         self.params = params
 
-    def call(self):
+    async def call(self):
         """ Call DataBuilder """
         project_id = TREBLLE_PROJECT_ID
         api_key = TREBLLE_API_KEY
@@ -39,13 +40,13 @@ class DataBuilder:
         user_agent = self.params['env'].get(
             'HTTP_USER_AGENT', '')  # Get User agent value from request.scope attribute
         ip = self.fetch_ip(self.params['env'].get(
-            'CLIENT', '')[0])  # Get IP address from request.scope attribute
+            'action_dispatch.remote_ip', ''))  # Get IP address from request.scope attribute
         request_method = self.params['env'].get('REQUEST_METHOD', '')
         request_body = (
             json.dumps(self.safe_to_json(
-                self.params['request'].query_parameters))
+                self.params['request'].query_params))
             if request_method.lower() == 'get'
-            else json.dumps(self.safe_to_json(self.params['request'].raw_post))
+            else json.dumps(self.safe_to_json(await self.params['request'].form()))
         )  # Request body
 
         data = {
@@ -56,7 +57,7 @@ class DataBuilder:
             'data': {
                 'server': {
                     'ip': self.server_ip(),
-                    'timezone': datetime.now().astimezone().tzinfo,
+                    'timezone': TIME_ZONE,
                     'software': self.params['headers'].get('SERVER_SOFTWARE', ''),
                     'signature': '',
                     'protocol': self.params['headers'].get('SERVER_PROTOCOL', ''),
@@ -93,9 +94,9 @@ class DataBuilder:
         }  # Payload/Data to be sent to Treblle
 
         try:
-            return json.dumps(data)  # Return payload as JSON
+            return json.dumps(data, indent=4, cls=DateTimeEncoder)  # Return payload as JSON
         except Exception:
-            return json.dumps(data)  # Return payload as JSON
+            return json.dumps(data, indent=4, cls=DateTimeEncoder)  # Return payload as JSON
 
     def without_sensitive_attrs(self, obj):
         """ Mask sensitive attributes """
@@ -165,7 +166,7 @@ class DataBuilder:
         if not self.params['request']:
             return {}
         # Return request headers without '.' in the key name (to avoid error) and convert to dictionary format (key-value pair)
-        return {key: value for key, value in self.params['request'].headers.env.items() if '.' not in key}
+        return {key: value for key, value in self.params['request'].headers.items() if '.' not in key}
 
     def safe_to_json(self, obj):
         """ Convert to JSON """""

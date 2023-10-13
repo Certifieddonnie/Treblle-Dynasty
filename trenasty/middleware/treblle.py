@@ -6,6 +6,7 @@ from time import time
 from fastapi import Request
 from trenasty.utils.data_build import DataBuilder
 from trenasty.utils.helper import load_balancer
+from starlette.concurrency import iterate_in_threadpool
 from trenasty.configs.config import TREBLLE_API_KEY
 
 logging.basicConfig(
@@ -30,10 +31,28 @@ class TreblleMiddleware:
 
         try:
             response = await call_next(request)  # Call next middleware
+
+            #  # Creating Custom Headers
+            # response.headers["X-Rate-Limit"] = "100"
+            # response.headers["X-Api-Version"] = self.TREBLLE_VERSION
+            # response.headers["Content-Type"] = "application/json"
+            # response.headers["X-Content-Type-Options"] = "nosniff"
+            # response.headers["X-Frame-Options"] = "deny"
+            # response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            # response.headers["Content-Security-Policy"] = "default-src 'self'"
+            # response.headers["Accept"] = "application/json"
+            # response.headers["Allow"] = "GET, POST, PUT, DELETE, OPTIONS"
+            # response.headers["Access-Control-Allow-Origin"] = "*"
+
             # Receiving response in a raw format
             status = response.status_code  # Status code of response
             headers = response.headers  # Headers of response
-            to_parse = response.text  # Response body
+            response_body = [item async for item in response.body_iterator]
+            response.body_iterator = iterate_in_threadpool(iter(response_body)) # Response body iterator for response body in a raw format (bytes)
+            # Response body
+            if response_body:
+                to_parse = (b''.join(response_body)).decode() # Convert response body to string
+            to_parse = (b''.join(response_body)).decode()
 
             try:
                 json_response = json.loads(to_parse)  # Parse response to JSON
@@ -46,13 +65,14 @@ class TreblleMiddleware:
             params = {
                 'ended_at': time(),
                 'env': request.scope,
+                'exception': None,
                 'headers': headers,
                 'json_response': json_response,
                 'request': request,
                 'started_at': started_at,
                 'status': status
             }  # Parameters to be passed to DataBuilder
-            self.capture(params)  # Capture data
+            await self.capture(params)  # Capture data
         except Exception as e:
             status = self.status_code_for_exception(
                 e)  # Status code of exception
@@ -61,19 +81,20 @@ class TreblleMiddleware:
                 'env': request.scope,
                 'exception': e,
                 'headers': {},
+                'json_response': {},
                 'request': request,
                 'started_at': started_at,
                 'status': status
             }  # Error Parameters to be passed to DataBuilder
             # Send error payload to Treblle, but raise the exception as well
-            self.capture(params)
+            await self.capture(params)
             raise e
 
         return response
 
-    def capture(self, params):
+    async def capture(self, params):
         """ Capture data and send to Treblle """
-        data = DataBuilder(params).call()
+        data = await DataBuilder(params).call()
         # data is the payload from the data_builder.py file
         # Ignore capture for unnaturally large requests
         if data and len(data.encode()) > 2 * 1024 * 1024:

@@ -33,6 +33,7 @@ setup(
         "charset-normalizer==3.3.0",
         "exceptiongroup==1.1.3",
         "idna==3.4",
+        "pymongo==4.5.0",
     ],
     include_package_data=True,
     zip_safe=False,
