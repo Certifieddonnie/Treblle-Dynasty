@@ -46,7 +46,7 @@ class DataBuilder:
             json.dumps(self.safe_to_json(
                 json.dumps(self.params['request'].query_params)))
             if request_method.lower() == 'get'
-            else json.dumps(self.safe_to_json(json.dumps(await self.params['request'].form())))
+            else json.dumps(self.safe_to_json(await self.params['request'].form()))
         )  # Request body
 
         data = {
