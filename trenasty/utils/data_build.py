@@ -70,7 +70,7 @@ class DataBuilder:
                 },
                 'language': {
                     'name': 'python',
-                    'version': '.'.join(platform.python_version_tuple),  # Python Version
+                    'version': '3.10',  # Python Version
                 },
                 'request': {
                     'timestamp': datetime.utcfromtimestamp(self.params['started_at']).strftime('%Y-%m-%d %H:%M:%S'),
