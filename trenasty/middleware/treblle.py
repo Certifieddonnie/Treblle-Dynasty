@@ -112,7 +112,17 @@ class TreblleMiddleware:
         uri = self.TREBLLE_URI
         headers = {
             'Content-Type': 'application/json',
-            'x-api-key': TREBLLE_API_KEY
+            'X-api-key': TREBLLE_API_KEY,
+            'X-api-version': self.TREBLLE_VERSION,
+            'Accept': 'application/json',
+            'Allow': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Origin': '*',  # Allow all origins
+            'X-Frame-Options': 'deny',
+            'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+            'Content-Security-Policy': 'default-src \'self\'',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Rate-Limit': '100',
+            'Accept-Encoding': 'gzip, deflate, br',
         }  # Headers for Treblle request
         try:
             # Send data to Treblle
