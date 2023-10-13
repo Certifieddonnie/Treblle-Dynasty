@@ -70,7 +70,7 @@ class DataBuilder:
                 },
                 'language': {
                     'name': 'python',
-                    'version': '3.10.12',  # Python Version
+                    'version': '.'.join(platform.python_version_tuple),  # Python Version
                 },
                 'request': {
                     'timestamp': datetime.utcfromtimestamp(self.params['started_at']).strftime('%Y-%m-%d %H:%M:%S'),
@@ -79,11 +79,11 @@ class DataBuilder:
                     'url': self.params['request'].url._url,
                     'user_agent': user_agent,
                     'method': request_method,
-                    'headers': self.request_headers(),
+                    'headers': self.without_sensitive_attrs(self.request_headers()),
                     'body': self.without_sensitive_attrs(request_body),
                 },
                 'response': {
-                    'headers': self.params['headers'] or {},
+                    'headers': self.without_sensitive_attrs(self.params['headers']),
                     'code': self.params['status'],
                     'size': len(json.dumps(self.without_sensitive_attrs(self.params['json_response']))),
                     'load_time': time_spent,
@@ -125,15 +125,13 @@ class DataBuilder:
 
     def sensitive_attrs(self):
         """ Get sensitive attributes """
+        # Return set of sensitive fields from user_sensitive_fields() and DEFAULT_SENSITIVE_FIELDS list (union) without duplicates (set)
         return self.user_sensitive_fields().union(self.DEFAULT_SENSITIVE_FIELDS)
 
     def user_sensitive_fields(self):
         """ Get user sensitive fields """
         fields = TREBLLE_SENSITIVE_KEYS.replace(' ', '')
-        # fields = "pwd ssn card_number ccv"
-        # fields = "pwdssncard_numberccv"
-        # fields = "pwd,ssn,card_number,ccv
-        # fields = (pwd,ssn,card_number,ccv)
+        # Return set of fields separated by comma
         return set(fields.split(','))
 
     def build_error_object(self, exception):
