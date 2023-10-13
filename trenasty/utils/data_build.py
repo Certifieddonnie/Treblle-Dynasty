@@ -44,9 +44,9 @@ class DataBuilder:
         request_method = self.params['env'].get('REQUEST_METHOD', '')
         request_body = (
             json.dumps(self.safe_to_json(
-                self.params['request'].query_params))
+                json.dumps(self.params['request'].query_params)))
             if request_method.lower() == 'get'
-            else json.dumps(self.safe_to_json(await self.params['request'].form()))
+            else json.dumps(self.safe_to_json(json.dumps(await self.params['request'].form())))
         )  # Request body
 
         data = {
@@ -79,13 +79,14 @@ class DataBuilder:
                     'url': self.params['request'].url._url,
                     'user_agent': user_agent,
                     'method': request_method,
-                    'headers': self.without_sensitive_attrs(self.request_headers()),
+                    'headers': self.without_sensitive_attrs(json.dumps(self.request_headers())),
                     'body': self.without_sensitive_attrs(request_body),
                 },
                 'response': {
                     'headers': self.without_sensitive_attrs(self.params['headers']),
                     'code': self.params['status'],
-                    'size': len(json.dumps(self.without_sensitive_attrs(self.params['json_response']))),
+                    'size': len(json.dumps(self.without_sensitive_attrs(
+                        json.dumps(self.params['json_response'])))),
                     'load_time': time_spent,
                     'body': self.without_sensitive_attrs(json.dumps(self.params['json_response'])),
                     'errors': self.build_error_object(self.params['exception']),
@@ -166,7 +167,7 @@ class DataBuilder:
         # Return request headers without '.' in the key name (to avoid error) and convert to dictionary format (key-value pair)
         return {key: value for key, value in self.params['request'].headers.items() if '.' not in key}
 
-    def safe_to_json(self, obj):
+    def safe_to_json(self, obj: str) -> dict:
         """ Convert to JSON """""
         try:
             return json.loads(obj)
