@@ -121,7 +121,7 @@ class TreblleMiddleware:
             'Content-Security-Policy': 'default-src \'self\'',
             'X-Content-Type-Options': 'nosniff',
             'X-Rate-Limit': '100',
-            'Accept-Encoding': 'gzip, deflate, br',
+            # 'Accept-Encoding': 'gzip, deflate, br',
         }  # Headers for Treblle request
         try:
             # Send data to Treblle
