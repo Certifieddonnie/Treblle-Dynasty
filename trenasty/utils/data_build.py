@@ -83,7 +83,8 @@ class DataBuilder:
                     'body': self.without_sensitive_attrs(request_body),
                 },
                 'response': {
-                    'headers': self.without_sensitive_attrs(self.params['headers']),
+                    'headers': self.without_sensitive_attrs(
+                        json.dumps(self.params['headers'])),
                     'code': self.params['status'],
                     'size': len(json.dumps(self.without_sensitive_attrs(
                         json.dumps(self.params['json_response'])))),

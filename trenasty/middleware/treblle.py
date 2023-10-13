@@ -115,7 +115,7 @@ class TreblleMiddleware:
             'X-api-key': TREBLLE_API_KEY,
             'Accept': 'application/json',
             'Allow': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Origin': '*',  # Allow all origins
+            # 'Access-Control-Allow-Origin': '*',  # Allow all origins
             'X-Frame-Options': 'deny',
             'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
             'Content-Security-Policy': 'default-src \'self\'',
@@ -126,7 +126,7 @@ class TreblleMiddleware:
         }  # Headers for Treblle request
         try:
             # Send data to Treblle
-            res = requests.post(uri, json=data, headers=headers)
+            res = requests.post(uri, data=data, headers=headers)
             logging.info(f"{res.text}")  # Print Treblle response
         except Exception as e:
             logging.error(f"{e}")
