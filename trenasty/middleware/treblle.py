@@ -113,7 +113,6 @@ class TreblleMiddleware:
         headers = {
             'Content-Type': 'application/json',
             'X-api-key': TREBLLE_API_KEY,
-            'X-api-version': self.TREBLLE_VERSION,
             'Accept': 'application/json',
             'Allow': 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Allow-Origin': '*',  # Allow all origins
@@ -126,7 +125,7 @@ class TreblleMiddleware:
         }  # Headers for Treblle request
         try:
             # Send data to Treblle
-            res = requests.post(uri, data=data, headers=headers)
+            res = requests.post(uri, json=data, headers=headers)
             logging.info(f"{res.text}")  # Print Treblle response
         except Exception as e:
             logging.error(f"{e}")
