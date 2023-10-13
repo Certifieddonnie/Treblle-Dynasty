@@ -121,6 +121,7 @@ class TreblleMiddleware:
             'Content-Security-Policy': 'default-src \'self\'',
             'X-Content-Type-Options': 'nosniff',
             'X-Rate-Limit': '100',
+            'Content-Encoding': 'gzip',
             # 'Accept-Encoding': 'gzip, deflate, br',
         }  # Headers for Treblle request
         try:
