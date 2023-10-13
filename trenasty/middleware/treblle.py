@@ -2,6 +2,7 @@ import json
 import logging
 import threading
 import requests
+import gzip
 from time import time
 from fastapi import Request
 from trenasty.utils.data_build import DataBuilder
@@ -127,7 +128,8 @@ class TreblleMiddleware:
         try:
             # Send data to Treblle
             res = requests.post(uri, data=data, headers=headers)
-            logging.info(f"{res.text}")  # Print Treblle response
+            inf = gzip.decompress(res.text)
+            logging.info(f"{inf.decode('utf-8')}")  # Print Treblle response
         except Exception as e:
             logging.error(f"{e}")
 
