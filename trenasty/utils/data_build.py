@@ -84,7 +84,7 @@ class DataBuilder:
                 },
                 'response': {
                     'headers': self.without_sensitive_attrs(
-                        json.dumps(self.params['headers'])),
+                        json.dumps(**self.params['headers'])),
                     'code': self.params['status'],
                     'size': len(json.dumps(self.without_sensitive_attrs(
                         json.dumps(self.params['json_response'])))),
