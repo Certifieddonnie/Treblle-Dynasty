@@ -126,7 +126,7 @@ class TreblleMiddleware:
         try:
             # Send data to Treblle
             res = requests.post(uri, json=data, headers=headers)
-            logging.info(f"{res.text}")  # Print Treblle response
+            logging.info(f"{(res.content).decode('utf-8')}")  # Print Treblle response
         except Exception as e:
             logging.error(f"{e}")
 
