@@ -94,9 +94,9 @@ class DataBuilder:
         }  # Payload/Data to be sent to Treblle
 
         try:
-            return json.dumps(data, indent=4, cls=DateTimeEncoder)  # Return payload as JSON
+            return json.dumps(data)  # Return payload as JSON
         except Exception:
-            return json.dumps(data, indent=4, cls=DateTimeEncoder)  # Return payload as JSON
+            return json.dumps(data)  # Return payload as JSON
 
     def without_sensitive_attrs(self, obj):
         """ Mask sensitive attributes """
