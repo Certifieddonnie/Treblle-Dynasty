@@ -71,7 +71,8 @@ class TreblleMiddleware:
                 'json_response': json_response,
                 'request': request,
                 'started_at': started_at,
-                'status': status
+                'status': status,
+                'client': request.client,
             }  # Parameters to be passed to DataBuilder
             await self.capture(params)  # Capture data
         except Exception as e:
@@ -85,7 +86,8 @@ class TreblleMiddleware:
                 'json_response': {},
                 'request': request,
                 'started_at': started_at,
-                'status': status
+                'status': status,
+                'client': request.client,
             }  # Error Parameters to be passed to DataBuilder
             # Send error payload to Treblle, but raise the exception as well
             await self.capture(params)

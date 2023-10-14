@@ -39,8 +39,8 @@ class DataBuilder:
         time_spent = self.params['ended_at'] - self.params['started_at']
         user_agent = self.params['env'].get(
             'HTTP_USER_AGENT', '')  # Get User agent value from request.scope attribute
-        ip = self.fetch_ip(self.params['env'].get(
-            'action_dispatch.remote_ip', ''))  # Get IP address from request.scope attribute
+        ip = self.fetch_ip(self.params['client'].get(
+            'HOST', ''))  # Get IP address from request.scope attribute
         request_method = self.params['env'].get('REQUEST_METHOD', '')
         request_body = (
             json.dumps(self.safe_to_json(
@@ -58,9 +58,9 @@ class DataBuilder:
                 'server': {
                     'ip': self.server_ip(),
                     'timezone': TIME_ZONE,
-                    'software': self.params['headers'].get('SERVER_SOFTWARE', ''),
+                    'software': self.params['env'].get('SERVER_SOFTWARE', 'SERVER_SOFTWARE_NOT_FOUND'),
                     'signature': '',
-                    'protocol': self.params['headers'].get('SERVER_PROTOCOL', ''),
+                    'protocol': self.params['env'].get('SERVER_PROTOCOL', 'SERVER_PROTOCOL_NOT_FOUND'),
                     'os': {
                         "name": platform.system(),
                         "release": platform.release(),
