@@ -39,8 +39,7 @@ class DataBuilder:
         time_spent = self.params['ended_at'] - self.params['started_at']
         user_agent = self.params['env'].get(
             'HTTP_USER_AGENT', '')  # Get User agent value from request.scope attribute
-        ip = self.fetch_ip(self.params['client'].get(
-            'HOST', ''))  # Get IP address from request.scope attribute
+        ip = self.fetch_ip(self.params['client'].host)  # Get IP address from request.scope attribute
         request_method = self.params['env'].get('REQUEST_METHOD', '')
         request_body = (
             json.dumps(self.safe_to_json(
