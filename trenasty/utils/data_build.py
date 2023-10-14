@@ -11,7 +11,7 @@ class DataBuilder:
     """ Data building class to prepare the payload/data,
     that will be sent to treblle
     """
-    DEFAULT_SENSITIVE_FIELDS = {
+    DEFAULT_SENSITIVE_FIELDS = [
         'card_number',
         'cardNumber',
         'cc',
@@ -24,7 +24,7 @@ class DataBuilder:
         'pwd',
         'secret',
         'ssn'
-    }  # List of sensitive fields to be masked
+    ]  # List of sensitive fields to be masked
 
     def __init__(self, params):
         """ Initialize DataBuilder """
@@ -119,7 +119,7 @@ class DataBuilder:
             return [self.process_data(item) for item in data]
         elif isinstance(data, str) and data in self.sensitive_attrs():
             return '*' * len(data)
-        # sensitive_fields = set("pwdssncard_numberccv")
+        # sensitive_fields = ["pwd","ssn","card_number","ccv"]
         # data = {"name": "John", "age": 30, "pwd": "123456JKL"}
         # "name": "John", "age": 30, "pwd": "*********"
         else:
@@ -127,14 +127,17 @@ class DataBuilder:
 
     def sensitive_attrs(self):
         """ Get sensitive attributes """
-        # Return set of sensitive fields from user_sensitive_fields() and DEFAULT_SENSITIVE_FIELDS list (union) without duplicates (set)
-        return self.user_sensitive_fields().union(self.DEFAULT_SENSITIVE_FIELDS)
+        user_keys = self.user_sensitive_fields()
+        if user_keys:
+            self.DEFAULT_SENSITIVE_FIELDS += user_keys
+        # Return list of sensitive fields in lowercase
+        self.DEFAULT_SENSITIVE_FIELDS = list(x.lower() for x in self.DEFAULT_SENSITIVE_FIELDS)
+        return self.DEFAULT_SENSITIVE_FIELDS
 
     def user_sensitive_fields(self):
         """ Get user sensitive fields """
-        fields = TREBLLE_SENSITIVE_KEYS.replace(' ', '')
-        # Return set of fields separated by comma
-        return set(fields.split(','))
+        if isinstance(TREBLLE_SENSITIVE_KEYS, list):
+            return TREBLLE_SENSITIVE_KEYS
 
     def build_error_object(self, exception):
         """ Build error object """
