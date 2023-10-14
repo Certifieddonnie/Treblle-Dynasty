@@ -57,9 +57,9 @@ class DataBuilder:
                 'server': {
                     'ip': self.server_ip(),
                     'timezone': TIME_ZONE,
-                    'software': self.params['env'].get('SERVER_SOFTWARE', 'SERVER_SOFTWARE_NOT_FOUND'),
+                    'software': self.params['env'].get('server', 'SERVER_SOFTWARE_NOT_FOUND'),
                     'signature': '',
-                    'protocol': self.params['env'].get('SERVER_PROTOCOL', 'SERVER_PROTOCOL_NOT_FOUND'),
+                    'protocol': self.params['env'].get('http_version', 'SERVER_PROTOCOL_NOT_FOUND'),
                     'os': {
                         "name": platform.system(),
                         "release": platform.release(),
