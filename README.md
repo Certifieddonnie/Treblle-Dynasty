@@ -68,9 +68,45 @@ This means data masking is super fast and happens on a programming level before 
 3. [Setup the SDK](#install-the-SDK) for your platform.
 
 ### Install the SDK
+We have two installation approaches for the SDK. There are instructions for you to access it **globally** and **locally**.
 
-<!-- Installation instruction for the platform goes here -->
-> See the [docs]() for this SDK to learn more.
+### Local Installation
+
+### Global Installation
+You can install Treblle for FastAPI. By following the commands below.
+```
+pip install trenasty
+
+``` 
+
+Then go ahead and create a **.env** file which should compulsorily have the following variables alongside others that you'll specify in your app.
+
+```
+TREBLLE_API_KEY = ''
+TREBLLE_PROJECT_ID = ''
+TIME_ZONE = ''
+TREBLLE_SENSITIVE_KEYS = []
+#[id, access_token, email]
+
+```
+**Sensitive keys here are to be masked, you can add id, access_token, email and any other details you would want to keep masked**
+
+### Initialization 
+This is the step to initialize the middleware in your FastAPI app.
+
+**Importing FastAPI in Treblle Middleware**
+```
+from fastapi import FastAPI
+from trenasty.middleware.treblle import TreblleMiddleware
+```
+
+**Instantiating the App and the Middleware**
+```
+app = FastAPI()
+
+app.middleware("http")(TreblleMiddleware(app))
+
+```
 
 ## Available SDKs
 
