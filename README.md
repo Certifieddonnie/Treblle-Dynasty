@@ -21,6 +21,11 @@
   <hr />
 </div>
 
+### FastAPI for Treblle
+![image](https://github.com/Certifieddonnie/treblle-dynasty/assets/98459984/0ee4b7a4-f9f2-44ff-b6ef-ef5df2ffda18)
+
+
+
 Treblle is a lightweight SDK that helps Engineering and Product teams build, ship & maintain REST based APIs faster.
 
 ## Features
@@ -72,8 +77,36 @@ We have two installation approaches for the SDK. There are instructions for you 
 
 ### Local Installation
 
+For the local installation of FastApi
+- Clone the Repo
+```
+git clone https://github.com/Certifieddonnie/treblle-dynasty.git 
+```
+- Change directory to **treblle-dynasty**
+
+```
+cd treblle-dynasty 
+```
+- Run **install.sh**
+```
+./install.sh
+```
+- Then go ahead and create a **.env** file which should compulsorily have the following variables alongside others that you'll specify in your app.
+
+```
+TREBLLE_API_KEY = ''
+TREBLLE_PROJECT_ID = ''
+TIME_ZONE = ''
+TREBLLE_SENSITIVE_KEYS = []
+#[id, access_token, email]
+
+```
+**Sensitive keys here are to be masked, you can add id, access_token, email and any other details you would want to keep masked**
+
+- Then go ahead and follow the [Initialization](#initialization) process
+
 ### Global Installation
-You can install Treblle for FastAPI. By following the commands below.
+You can install Treblle for FastAPI globally, by following the commands below.
 ```
 pip install trenasty
 
@@ -91,7 +124,8 @@ TREBLLE_SENSITIVE_KEYS = []
 ```
 **Sensitive keys here are to be masked, you can add id, access_token, email and any other details you would want to keep masked**
 
-### Initialization 
+### Initialization
+
 This is the step to initialize the middleware in your FastAPI app.
 
 **Importing FastAPI in Treblle Middleware**
@@ -167,5 +201,6 @@ Here are some ways of contributing to making Treblle better:
 <a href="https://github.com/Certifieddonnie/Treblle-Dynasty/graphs/contributors">
   <p align="center">
     <img  src="https://contrib.rocks/image?repo=Certifieddonnie/Treblle-Dynasty" alt="A table of avatars from the project's contributors" />
+
   </p>
 </a>
