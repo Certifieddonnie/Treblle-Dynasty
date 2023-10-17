@@ -76,9 +76,9 @@ This means data masking is super fast and happens on a programming level before 
 You can install Treblle for FastAPI, by following the commands below.
 ```bash
 pip install trenasty
-``` 
-
-Then go ahead and create a **.env** file which should compulsorily have the following variables alongside others that you'll specify in your app.
+```
+### Configuration
+Once you have installed the Treblle SDK for FastAPI, you will need to configure it in your app. This can be done by creating a **.env** file and adding the following variables:
 
 ```python
 TREBLLE_API_KEY = ''
@@ -88,7 +88,12 @@ TREBLLE_SENSITIVE_KEYS = []
 #[id, email]
 
 ```
-**Sensitive keys here are to be masked, you can add id, access_token, email and any other details you would want to keep masked**
+- **TREBLLE_API_KEY**: Your Treblle API key, which you can obtain by signing in to your Treblle account.
+- **TREBLLE_PROJECT_ID**: Your Treblle project ID.
+- **TIME_ZONE**: The time zone setting for your application.
+- **TREBLLE_SENSITIVE_KEYS**: A list of keys that should be masked in your logs, such as **id, access_token, email, or any other sensitive information you want to keep secure.**
+  
+`Once you have created the .env file, you can initialize the Treblle middleware in your FastAPI app`
 
 ### Initialization
 
@@ -108,7 +113,26 @@ app.middleware("http")(TreblleMiddleware(app))
 
 ```
 
-## Available SDKs
+### Authentication and Access 
+Authentication in Treblle usually involves securing your API key and project ID. You should never expose these keys directly in your codebase. Instead, store them in environment variables (as shown above) and load them in your application securely.
+
+Access control in Treblle is typically managed through your Treblle account and project settings. You can define who has access to your project within the Treblle dashboard. Be cautious about sharing your API key, and only grant access to trusted team members.
+
+**Treblle supports a variety of authentication and authorization mechanisms. You can choose the one that best suits your needs.**
+
+- **API Keys**
+You can use API keys to authenticate users with Treblle. To do this, you will need to generate an API key for each user. You can then add the API key to the Authorization header of each request.
+
+- **OAuth 2.0**
+You can also use OAuth 2.0 to authenticate users with Treblle. To do this, you will need to create an OAuth 2.0 client in Treblle. You can then use the client ID and secret to obtain an access token for each user. You can then add the access token to the Authorization header of each request.
+
+- **Custom Authentication**
+You can also implement your own authentication mechanism for Treblle. To do this, you will need to create a custom authentication middleware. You can then use the middleware to authenticate users before they can access your app's resources.
+
+###
+
+
+## Other Available SDKs
 
 Treblle provides [open-source SDKs](https://docs.treblle.com/en/integrations) that let you seamlessly integrate Treblle with your REST-based APIs.
 
