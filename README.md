@@ -129,8 +129,33 @@ You can also use OAuth 2.0 to authenticate users with Treblle. To do this, you w
 - **Custom Authentication**
 You can also implement your own authentication mechanism for Treblle. To do this, you will need to create a custom authentication middleware. You can then use the middleware to authenticate users before they can access your app's resources.
 
-###
+### Error handling and Logging
+Treblle provides a unified error-handling system. This means that you can handle all of your app's errors in one place. This can make it easier to debug and fix errors.
 
+Treblle also provides a number of features to help you to handle errors more effectively and it's seamless with the integration of the SDK, such as:
+
+1. **Error Handling**
+Treblle's error handling works in the following ways:
+- Error grouping: Treblle can group similar errors together. This can help you to identify and fix the root cause of errors more quickly.
+      
+- Alerting: Treblle can send alerts when errors occur. This can help you to stay informed of the health of your app.
+- Error tracking: Treblle can track errors over time. This can help you to identify trends and patterns in errors.
+
+2. **Exception handling**
+Treblle can help you to handle exceptions more effectively. This can make your app more robust and resilient to errors. Treblle provides a number of features to help you to handle exceptions more effectively, such as:
+
+  - Exception logging: Treblle can log exceptions in a structured format. This can help you to debug and fix exceptions more quickly.
+  - Exception retrying: Treblle can retry failed requests automatically. This can help to improve the reliability of your app.
+  - Exception routing: Treblle can route exceptions to specific handlers. This can help you to handle different types of exceptions in different ways.
+
+3. **Logging**
+Treblle provides a unified logging system. This means that you can log all of your app's logs in one place. This can make it easier to debug and troubleshoot problems.
+
+Treblle also provides a number of features to help you to log more effectively, such as:
+
+  - Log filtering: Treblle can filter logs by severity, level, and other criteria. This can help you to focus on the logs that are most important to you.
+  - Log aggregation: Treblle can aggregate logs from multiple sources into a single view. This can help you to get a holistic view of your app's logs.
+  - Log forwarding: Treblle can forward logs to third-party logging systems. This can help you to centralized your logging and make it easier to analyze your logs.
 
 ## Other Available SDKs
 
