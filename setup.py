@@ -16,6 +16,7 @@ setup(
     name="treblle-dynasty",
     version="1.0.0",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires= [
         "annotated-types==0.6.0",
