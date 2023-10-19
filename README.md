@@ -76,9 +76,9 @@ This means data masking is super fast and happens on a programming level before 
 You can install Treblle for FastAPI, by following the commands below.
 ```bash
 pip install trenasty
-``` 
-
-Then go ahead and create a **.env** file which should compulsorily have the following variables alongside others that you'll specify in your app.
+```
+### Configuration
+Once you have installed the Treblle SDK for FastAPI, you will need to configure it in your app. This can be done by creating a **.env** file and adding the following variables:
 
 ```python
 TREBLLE_API_KEY = ''
@@ -88,7 +88,12 @@ TREBLLE_SENSITIVE_KEYS = []
 #[id, email]
 
 ```
-**Sensitive keys here are to be masked, you can add id, access_token, email and any other details you would want to keep masked**
+- **TREBLLE_API_KEY**: Your Treblle API key, which you can obtain by signing in to your Treblle account.
+- **TREBLLE_PROJECT_ID**: Your Treblle project ID.
+- **TIME_ZONE**: The time zone setting for your application.
+- **TREBLLE_SENSITIVE_KEYS**: A list of keys that should be masked in your logs, such as **id, access_token, email, or any other sensitive information you want to keep secure.**
+  
+`Once you have created the .env file, you can initialize the Treblle middleware in your FastAPI app`
 
 ### Initialization
 
@@ -108,7 +113,51 @@ app.middleware("http")(TreblleMiddleware(app))
 
 ```
 
-## Available SDKs
+### Authentication and Access 
+Authentication in Treblle usually involves securing your API key and project ID. You should never expose these keys directly in your codebase. Instead, store them in environment variables (as shown above) and load them in your application securely.
+
+Access control in Treblle is typically managed through your Treblle account and project settings. You can define who has access to your project within the Treblle dashboard. Be cautious about sharing your API key, and only grant access to trusted team members.
+
+**Treblle supports a variety of authentication and authorization mechanisms. You can choose the one that best suits your needs.**
+
+- **API Keys**
+You can use API keys to authenticate users with Treblle. To do this, you will need to generate an API key for each user. You can then add the API key to the Authorization header of each request.
+
+- **OAuth 2.0**
+You can also use OAuth 2.0 to authenticate users with Treblle. To do this, you will need to create an OAuth 2.0 client in Treblle. You can then use the client ID and secret to obtain an access token for each user. You can then add the access token to the Authorization header of each request.
+
+- **Custom Authentication**
+You can also implement your own authentication mechanism for Treblle. To do this, you will need to create a custom authentication middleware. You can then use the middleware to authenticate users before they can access your app's resources.
+
+### Error handling and Logging
+Treblle provides a unified error-handling system. This means that you can handle all of your app's errors in one place. This can make it easier to debug and fix errors.
+
+Treblle also provides a number of features to help you to handle errors more effectively and it's seamless with the integration of the SDK, such as:
+
+1. **Error Handling**
+Treblle's error handling works in the following ways:
+- Error grouping: Treblle can group similar errors together. This can help you to identify and fix the root cause of errors more quickly.
+      
+- Alerting: Treblle can send alerts when errors occur. This can help you to stay informed of the health of your app.
+- Error tracking: Treblle can track errors over time. This can help you to identify trends and patterns in errors.
+
+2. **Exception handling**
+Treblle can help you to handle exceptions more effectively. This can make your app more robust and resilient to errors. Treblle provides a number of features to help you to handle exceptions more effectively, such as:
+
+  - Exception logging: Treblle can log exceptions in a structured format. This can help you to debug and fix exceptions more quickly.
+  - Exception retrying: Treblle can retry failed requests automatically. This can help to improve the reliability of your app.
+  - Exception routing: Treblle can route exceptions to specific handlers. This can help you to handle different types of exceptions in different ways.
+
+3. **Logging**
+Treblle provides a unified logging system. This means that you can log all of your app's logs in one place. This can make it easier to debug and troubleshoot problems.
+
+Treblle also provides a number of features to help you to log more effectively, such as:
+
+  - Log filtering: Treblle can filter logs by severity, level, and other criteria. This can help you to focus on the logs that are most important to you.
+  - Log aggregation: Treblle can aggregate logs from multiple sources into a single view. This can help you to get a holistic view of your app's logs.
+  - Log forwarding: Treblle can forward logs to third-party logging systems. This can help you to centralized your logging and make it easier to analyze your logs.
+
+## Other Available SDKs
 
 Treblle provides [open-source SDKs](https://docs.treblle.com/en/integrations) that let you seamlessly integrate Treblle with your REST-based APIs.
 
