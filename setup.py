@@ -14,7 +14,7 @@ if path.exists('README.md'):
 
 setup(
     name="trenasty",
-    version="1.0.1",
+    version="1.0.2",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),

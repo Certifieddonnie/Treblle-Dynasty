@@ -55,7 +55,7 @@ class DataBuilder:
             'sdk': 'python-fastapi',
             'data': {
                 'server': {
-                    'ip': self.server_ip(),
+                    # 'ip': self.server_ip(),
                     'timezone': TIME_ZONE,
                     'software': self.params['env'].get('server', 'SERVER_SOFTWARE_NOT_FOUND'),
                     'signature': '',
