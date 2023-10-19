@@ -13,8 +13,8 @@ if path.exists('README.md'):
 
 
 setup(
-    name="treblle-dynasty",
-    version="1.0.0",
+    name="trenasty",
+    version="1.0.1",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
